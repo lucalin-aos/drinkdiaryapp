@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">今天喝什麼</string>
+    <string name="app_name_eng">Drink Note</string>
+
+    <string name="splash_intro_title_1">歡迎使用「今天喝什麼」</string>
+    <string name="splash_intro_title_2">你將在這裡記錄你每天喝了什麼</string>
+    <string name="splash_intro_title_3">搭配圖表、日曆/n可隨時查看過往紀錄</string>
+    <string name="splash_intro_title_4">每一口甜蜜，都值得被記錄</string>
+
+    <string name="splash_intro_cta">開啟我的紀錄</string>
+
+    <string name="tab_bar_home">首頁</string>
+    <string name="tab_bar_calendar">日曆</string>
+    <string name="tab_bar_more">更多</string>
+
+    <!-- 首頁 -->
+    <string name="home_title">本月統計</string>
+    <string name="home_drink_today">今日飲品</string>
+
+    <!-- 日曆 -->
+    <string name="calendar_title">每月紀錄</string>
+    <string name="calendar_currently_add">最近新增</string>
+
+    <!-- 更多 -->
+    <string name="more_title">更多設定</string>
+    <string name="more_content">客製化你的記錄體驗</string>
+    <string name="more_version_num">版本號碼</string>
+
 </resources>
