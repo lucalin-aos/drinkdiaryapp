@@ -1,31 +1,33 @@
 package com.example.myapplication
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.commit
+import com.example.myapplication.fragment.CalendarFragment // 假設你有這些 Fragment
 import com.example.myapplication.fragment.HomeFragment
+import com.example.myapplication.fragment.MoreFragment
+import com.example.myapplication.widget.NavigationItem
 
 class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             MaterialTheme {
-                // 全螢幕容器
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -39,32 +41,33 @@ class MainActivity : FragmentActivity() {
 
 @Composable
 fun MainLayout(fragmentManager: FragmentManager?) {
-    Column(modifier = Modifier.fillMaxSize()) {
-//        // 頂部 Compose 標題列
-//        SmallTopAppBar(
-//            title = { Text("我的 App (Compose)") },
-//            colors = TopAppBarDefaults.smallTopAppBarColors(
-//                containerColor = MaterialTheme.colorScheme.primaryContainer
-//            )
-//        )
+    // 2. 追蹤當前選中的分頁 (預設為首頁)
+    var currentTab by remember { mutableStateOf(NavigationItem.Home) }
 
-        // 中間掛載 Fragment 的區域
+    Scaffold(
+        bottomBar = {
+            // 實作導航欄
+            NavigationBar {
+                NavigationItem.entries.forEach { tab ->
+                    NavigationBarItem(
+                        selected = currentTab == tab,
+                        onClick = { currentTab = tab },
+                        label = { Text(tab.title) },
+                        icon = { Icon(tab.icon, contentDescription = tab.title) }
+                    )
+                }
+            }
+        }
+    ) { innerPadding ->
+        // 中間區域：根據 currentTab 切換 Fragment
         Box(
             modifier = Modifier
-                .weight(1f)
-                .background(colorResource(R.color.main_color_normal))
+                .padding(innerPadding)
+                .fillMaxSize()
         ) {
             FragmentHost(
                 fragmentManager = fragmentManager,
-                fragment = HomeFragment() // 指定掛載 HomeFragment
-            )
-        }
-
-        // 底部 Compose 按鈕列 (模擬導航)
-        BottomAppBar {
-            Text(
-                "這裡可以放 Compose 的 BottomNavigation",
-                modifier = Modifier.padding(16.dp)
+                selectedTab = currentTab
             )
         }
     }
@@ -74,41 +77,43 @@ fun MainLayout(fragmentManager: FragmentManager?) {
 fun FragmentHost(
     modifier: Modifier = Modifier,
     fragmentManager: FragmentManager?,
-    fragment: Fragment
+    selectedTab: NavigationItem
 ) {
     val isPreview = LocalInspectionMode.current
 
+    // 使用 remember 儲存一個固定的 ID，避免重組時 ID 改變
+    val containerId = remember { View.generateViewId() }
+
     if (isPreview) {
-        // 預覽模式顯示佔位
-        Surface(
-            modifier = modifier.fillMaxSize(),
-            color = colorResource(R.color.main_color_normal)
-        ) {
-            Text(
-                text = "Fragment 區域",
-                color = colorResource(R.color.main_color_dark)
-            )
-        }
+        Text("Fragment 預覽區域")
     } else {
-        // 實際運行
         AndroidView(
             modifier = modifier.fillMaxSize(),
             factory = { context ->
                 FragmentContainerView(context).apply {
-                    id = android.view.View.generateViewId()
+                    id = containerId
                 }
             },
             update = { view ->
-                // 使用 fragmentManager 將 fragment 放入容器
-                fragmentManager?.commit {
-                    replace(view.id, fragment)
+                // 當 selectedTab 改變時，這裡會被觸發
+                if (fragmentManager != null) {
+                    val fragment = when (selectedTab) {
+                        NavigationItem.Calendar -> CalendarFragment()
+                        NavigationItem.Home -> HomeFragment()
+                        NavigationItem.More -> MoreFragment()
+                    }
+
+                    // 執行 Fragment 切換
+                    fragmentManager.beginTransaction()
+                        .replace(view.id, fragment, selectedTab.tag)
+                        .setReorderingAllowed(true)
+                        .commit()
                 }
             }
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
