@@ -1,27 +1,32 @@
 package com.example.myapplication
 
 import android.os.Bundle
-import android.view.View
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.FragmentManager
-import com.example.myapplication.fragment.CalendarFragment // 假設你有這些 Fragment
-import com.example.myapplication.fragment.HomeFragment
-import com.example.myapplication.fragment.MoreFragment
-import com.example.myapplication.widget.NavigationItem
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +37,7 @@ class MainActivity : FragmentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainLayout(supportFragmentManager)
+                    InitUI()
                 }
             }
         }
@@ -40,84 +45,97 @@ class MainActivity : FragmentActivity() {
 }
 
 @Composable
-fun MainLayout(fragmentManager: FragmentManager?) {
-    // 2. 追蹤當前選中的分頁 (預設為首頁)
-    var currentTab by remember { mutableStateOf(NavigationItem.Home) }
+fun InitUI() {
+    val navController = rememberNavController() // Compose 專屬的 NavController
+
+    // 關鍵：監聽當前的路由狀態
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
 
     Scaffold(
         bottomBar = {
-            // 實作導航欄
             NavigationBar {
-                NavigationItem.entries.forEach { tab ->
-                    NavigationBarItem(
-                        selected = currentTab == tab,
-                        onClick = { currentTab = tab },
-                        label = { Text(tab.title) },
-                        icon = { Icon(tab.icon, contentDescription = tab.title) }
-                    )
-                }
+                NavigationBarItem(
+                    selected = currentRoute == "calendar",
+                    onClick = {
+                        navController.navigate("calendar") {
+                            // 避免返回鍵堆疊過多頁面
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    icon = { Icon(Icons.Default.DateRange, null) },
+                    label = { Text("日曆") }
+                )
+                NavigationBarItem(
+                    selected = currentRoute == "home",
+                    onClick = {
+                        navController.navigate("home") {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    icon = { Icon(Icons.Default.Home, null) },
+                    label = { Text("首頁") }
+                )
+                NavigationBarItem(
+                    selected = currentRoute == "more",
+                    onClick = {
+                        navController.navigate("more") {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    icon = { Icon(Icons.Default.MoreHoriz, null) },
+                    label = { Text("更多") }
+                )
+                // ... 其他按鈕
             }
         }
     ) { innerPadding ->
-        // 中間區域：根據 currentTab 切換 Fragment
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
+        // 使用 Compose 原生的 NavHost，不用 AndroidView
+        NavHost(
+            navController = navController,
+            startDestination = "home",
+            modifier = Modifier.padding(innerPadding)
         ) {
-            FragmentHost(
-                fragmentManager = fragmentManager,
-                selectedTab = currentTab
-            )
+            composable("home") { HomeScreen() }
+            composable("calendar") { CalendarScreen() }
+            composable("more") { MoreScreen() }
         }
     }
 }
 
 @Composable
-fun FragmentHost(
-    modifier: Modifier = Modifier,
-    fragmentManager: FragmentManager?,
-    selectedTab: NavigationItem
-) {
-    val isPreview = LocalInspectionMode.current
-
-    // 使用 remember 儲存一個固定的 ID，避免重組時 ID 改變
-    val containerId = remember { View.generateViewId() }
-
-    if (isPreview) {
-        Text("Fragment 預覽區域")
-    } else {
-        AndroidView(
-            modifier = modifier.fillMaxSize(),
-            factory = { context ->
-                FragmentContainerView(context).apply {
-                    id = containerId
-                }
-            },
-            update = { view ->
-                // 當 selectedTab 改變時，這裡會被觸發
-                if (fragmentManager != null) {
-                    val fragment = when (selectedTab) {
-                        NavigationItem.Calendar -> CalendarFragment()
-                        NavigationItem.Home -> HomeFragment()
-                        NavigationItem.More -> MoreFragment()
-                    }
-
-                    // 執行 Fragment 切換
-                    fragmentManager.beginTransaction()
-                        .replace(view.id, fragment, selectedTab.tag)
-                        .setReorderingAllowed(true)
-                        .commit()
-                }
-            }
-        )
+fun HomeScreen() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text(text = "這是 首頁 頁面", fontSize = 24.sp)
     }
 }
+
+@Composable
+fun CalendarScreen() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text(text = "這是 日曆 頁面", fontSize = 24.sp)
+    }
+}
+
+@Composable
+fun MoreScreen() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text(text = "這是 更多 頁面", fontSize = 24.sp)
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     MaterialTheme {
-        MainLayout(fragmentManager = null)
+        InitUI()
     }
 }
