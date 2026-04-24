@@ -2,8 +2,11 @@ package com.example.myapplication.screen
 
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -12,17 +15,61 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.yml.charts.common.model.PlotType
+import co.yml.charts.ui.piechart.charts.PieChart
+import co.yml.charts.ui.piechart.models.PieChartConfig
+import co.yml.charts.ui.piechart.models.PieChartData
 
 @Composable
 fun HomeScreen() {
+
+    // 準備圖表數據mock
+    val pieChartData = PieChartData(
+        slices = listOf(
+            PieChartData.Slice("Google", 30f, Color(0xFF4285F4)),
+            PieChartData.Slice("Facebook", 20f, Color(0xFF1877F2)),
+            PieChartData.Slice("Apple", 25f, Color(0xFF555555)),
+            PieChartData.Slice("Others", 25f, Color(0xFF34A853)),
+        ),
+        plotType = PlotType.Pie
+    )
+
+    // 準備圖表配置（例如調整切片標籤、動畫等）
+    val pieChartConfig = PieChartConfig(
+        isAnimationEnable = true,
+        showSliceLabels = true,
+        animationDuration = 1500,
+        labelFontSize = 14.sp,
+        isClickOnSliceEnabled = true
+    )
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
 
-        Text(text = "這是 首頁 頁面", fontSize = 24.sp)
+        // 放置圓形圖
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "圓餅圖範例", fontSize = 20.sp, modifier = Modifier.padding(bottom = 16.dp))
+
+            PieChart(
+                modifier = Modifier
+                    .width(300.dp)
+                    .height(300.dp),
+                pieChartData = pieChartData,
+                pieChartConfig = pieChartConfig
+            )
+        }
+
+        Text(text = "這是 首頁 頁面", fontSize = 24.sp, modifier = Modifier.padding(top = 16.dp))
 
         FloatingActionButton(
             onClick = {
