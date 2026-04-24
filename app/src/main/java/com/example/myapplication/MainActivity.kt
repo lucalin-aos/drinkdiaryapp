@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentActivity
@@ -57,9 +58,9 @@ fun InitUI() {
         bottomBar = {
             NavigationBar {
                 NavigationBarItem(
-                    selected = currentRoute == "calendar",
+                    selected = currentRoute == Screen.Calendar.route,
                     onClick = {
-                        navController.navigate("calendar") {
+                        navController.navigate(Screen.Calendar.route) {
                             // 避免返回鍵堆疊過多頁面
                             popUpTo(navController.graph.startDestinationId) { saveState = true }
                             launchSingleTop = true
@@ -67,31 +68,31 @@ fun InitUI() {
                         }
                     },
                     icon = { Icon(Icons.Default.DateRange, null) },
-                    label = { Text("日曆") }
+                    label = { Text(stringResource(R.string.tab_bar_calendar)) }
                 )
                 NavigationBarItem(
-                    selected = currentRoute == "home",
+                    selected = currentRoute == Screen.Home.route,
                     onClick = {
-                        navController.navigate("home") {
+                        navController.navigate(Screen.Home.route) {
                             popUpTo(navController.graph.startDestinationId) { saveState = true }
                             launchSingleTop = true
                             restoreState = true
                         }
                     },
                     icon = { Icon(Icons.Default.Home, null) },
-                    label = { Text("首頁") }
+                    label = { Text(stringResource(R.string.tab_bar_home)) }
                 )
                 NavigationBarItem(
-                    selected = currentRoute == "more",
+                    selected = currentRoute == Screen.More.route,
                     onClick = {
-                        navController.navigate("more") {
+                        navController.navigate(Screen.More.route) {
                             popUpTo(navController.graph.startDestinationId) { saveState = true }
                             launchSingleTop = true
                             restoreState = true
                         }
                     },
                     icon = { Icon(Icons.Default.MoreHoriz, null) },
-                    label = { Text("更多") }
+                    label = { Text(stringResource(R.string.tab_bar_more)) }
                 )
                 // ... 其他按鈕
             }
@@ -100,12 +101,12 @@ fun InitUI() {
         // 使用 Compose 原生的 NavHost，不用 AndroidView
         NavHost(
             navController = navController,
-            startDestination = "home",
+            startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("home") { HomeScreen() }
-            composable("calendar") { CalendarScreen() }
-            composable("more") { MoreScreen() }
+            composable(Screen.Home.route) { HomeScreen() }
+            composable(Screen.Calendar.route) { CalendarScreen() }
+            composable(Screen.More.route) { MoreScreen() }
         }
     }
 }
@@ -131,6 +132,11 @@ fun MoreScreen() {
     }
 }
 
+sealed class Screen(val route: String) {
+    object Home : Screen("home")
+    object Calendar : Screen("calendar")
+    object More : Screen("more")
+}
 
 @Preview(showBackground = true)
 @Composable
