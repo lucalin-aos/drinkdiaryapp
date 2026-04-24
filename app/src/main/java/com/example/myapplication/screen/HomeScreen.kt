@@ -39,6 +39,7 @@ fun HomeScreen() {
 
     // 準備圖表配置（例如調整切片標籤、動畫等）
     val pieChartConfig = PieChartConfig(
+        backgroundColor = Color.Transparent, // 設定透明
         isAnimationEnable = true,
         showSliceLabels = true,
         animationDuration = 1500,
