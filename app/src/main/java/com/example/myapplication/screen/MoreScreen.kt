@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -47,14 +48,14 @@ fun MoreScreen() {
 
         // 標題區域
         Text(
-            text = "更多設定",
+            text = stringResource(R.string.more_title),
             fontSize = 32.sp,
             fontStyle = FontStyle.Normal,
             fontWeight = FontWeight.Bold,
             color = colorResource(R.color.main_color_dark)
         )
         Text(
-            text = "客製化你的記錄體驗",
+            text = stringResource(R.string.more_content),
             fontSize = 16.sp,
             color = colorResource(R.color.main_color_dark),
             modifier = Modifier.padding(top = 4.dp, bottom = 32.dp)
@@ -64,23 +65,23 @@ fun MoreScreen() {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             SettingItem(
                 icon = Icons.Default.QuestionAnswer,
-                title = "常用問答 (FAQ)",
+                title = stringResource(R.string.more_column_faq),
                 onClick = { /* 點擊動作 */ }
             )
             SettingItem(
                 icon = Icons.Default.NotificationsNone,
-                title = "通知提醒設定",
+                title = stringResource(R.string.more_column_notify),
                 onClick = { /* 點擊動作 */ }
             )
             SettingItem(
                 icon = Icons.Default.MailOutline,
-                title = "聯絡我們",
+                title = stringResource(R.string.more_column_contact),
                 onClick = { /* 點擊動作 */ }
             )
             // 最後一個是版本號碼，樣式稍有不同（右側是文字）
             SettingItem(
                 icon = Icons.Default.Info,
-                title = "版本號碼",
+                title = stringResource(R.string.more_column_version_num),
                 trailingText = "v1.0.0",
                 showArrow = false
             )
