@@ -9,10 +9,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,9 +30,14 @@ import co.yml.charts.common.model.PlotType
 import co.yml.charts.ui.piechart.charts.PieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
+import com.example.myapplication.widget.AddDrinkBottomSheet
+import com.example.myapplication.widget.BorderColor
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen() {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var showSheet by remember { mutableStateOf(false) }
 
     // 準備圖表數據mock
     val pieChartData = PieChartData(
@@ -74,8 +87,7 @@ fun HomeScreen() {
 
         FloatingActionButton(
             onClick = {
-                // 這裡放點擊按鈕後的動作
-                println("點擊了添加按鈕")
+                showSheet = true
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd) // 定位在右下角
@@ -87,6 +99,17 @@ fun HomeScreen() {
                 imageVector = Icons.Default.Add,
                 contentDescription = "添加"
             )
+
+            if (showSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = { showSheet = false },
+                    sheetState = sheetState,
+                    containerColor = Color.White,
+                    dragHandle = { BottomSheetDefaults.DragHandle(color = BorderColor) })
+                {
+                    AddDrinkBottomSheet(onDismiss = { showSheet = false })
+                }
+            }
         }
     }
 }
