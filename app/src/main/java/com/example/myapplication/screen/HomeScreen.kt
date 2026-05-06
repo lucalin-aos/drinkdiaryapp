@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.BottomSheetDefaults
@@ -29,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -111,11 +113,13 @@ fun HomeScreen() {
             modifier = Modifier
                 .align(Alignment.BottomEnd) // 定位在右下角
                 .padding(bottom = 24.dp, end = 24.dp), // 設定與底部和右邊的距離
-            containerColor = androidx.compose.material3.MaterialTheme.colorScheme.primary // 可自訂顏色
+            containerColor = colorResource(R.color.main_color_dark), // 可自訂顏色
+            shape = RoundedCornerShape(99.dp)
         ) {
             // 設定 "+" 圖示
             Icon(
                 imageVector = Icons.Default.Add,
+                tint = Color.White,
                 contentDescription = "添加"
             )
 
