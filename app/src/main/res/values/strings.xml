@@ -29,4 +29,23 @@
     <string name="more_column_contact">聯絡我們</string>
     <string name="more_column_version_num">版本號碼</string>
 
+    <!-- 新增飲品 -->
+    <string name="add_drink_title">新增飲品記錄</string>
+    <string name="add_drink_name_hint">飲品名稱</string>
+    <string name="add_drink_temperature_hint">溫度</string>
+    <string name="add_drink_temp_ice">冰</string>
+    <string name="add_drink_temp_hot">熱</string>
+    <string name="add_drink_price">價格</string>
+    <string name="add_drink_kcal">熱量</string>
+    <string name="add_drink_kcal_hint">kcal</string>
+    <string name="add_drink_type">飲品類別</string>
+    <string name="add_drink_type_hand">手搖</string>
+    <string name="add_drink_type_coffee">咖啡</string>
+    <string name="add_drink_type_tea">茶類</string>
+    <string name="add_drink_type_water">水</string>
+    <string name="add_drink_type_juice">果汁</string>
+    <string name="add_drink_type_other">其它</string>
+    <string name="add_drink_confirm">確認新增</string>
+
+
 </resources>

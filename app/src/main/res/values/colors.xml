@@ -7,8 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="white_light">#FFF5EBE0</color>
+
+    <color name="text_hint_color">#979596</color>
 
     <!-- 主視覺顏色 -->
+    <color name="main_color_darker">#FF5D4037</color>
     <color name="main_color_dark">#AF8F6F</color>
     <color name="main_color_normal">#F5EBE0</color>
 

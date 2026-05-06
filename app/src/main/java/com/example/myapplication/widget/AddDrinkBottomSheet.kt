@@ -27,13 +27,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplication.R
 
-val MainBrown = Color(0xFFB49174) // 主色調（按鈕、選中狀態）
-val LightBeige = Color(0xFFF5EBE0) // 輸入框背景
-val TextDark = Color(0xFF5D4037) // 文字顏色
 val BorderColor = Color(0xFFE0D5C1) // 邊框顏色
 
 /**
@@ -49,7 +49,15 @@ fun AddDrinkBottomSheet(onDismiss: () -> Unit) {
     var calories by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("手搖") }
 
-    val categories = listOf("手搖", "咖啡", "茶類", "水", "果汁", "其它")
+    val categories = listOf(
+        stringResource(R.string.add_drink_type_hand),
+        stringResource(R.string.add_drink_type_coffee),
+        stringResource(R.string.add_drink_type_tea),
+        stringResource(R.string.add_drink_type_water),
+        stringResource(R.string.add_drink_type_juice),
+        stringResource(R.string.add_drink_type_other)
+    )
+
 
     Column(
         modifier = Modifier
@@ -58,10 +66,15 @@ fun AddDrinkBottomSheet(onDismiss: () -> Unit) {
             .padding(horizontal = 24.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("新增飲品紀錄", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = TextDark)
+        Text(
+            stringResource(R.string.add_drink_title),
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = colorResource(R.color.main_color_darker)
+        )
 
         // 飲品名稱
-        InputSection(label = "飲品名稱") {
+        InputSection(label = stringResource(R.string.add_drink_name_hint)) {
             CustomTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -70,17 +83,17 @@ fun AddDrinkBottomSheet(onDismiss: () -> Unit) {
         }
 
         // 溫度選擇
-        InputSection(label = "溫度") {
+        InputSection(label = stringResource(R.string.add_drink_temperature_hint)) {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 SelectableButton(
                     text = "冰",
-                    isSelected = temperature == "冰",
+                    isSelected = temperature == stringResource(R.string.add_drink_temp_ice),
                     modifier = Modifier.weight(1f),
                     onClick = { temperature = "冰" }
                 )
                 SelectableButton(
                     text = "熱",
-                    isSelected = temperature == "熱",
+                    isSelected = temperature == stringResource(R.string.add_drink_temp_hot),
                     modifier = Modifier.weight(1f),
                     onClick = { temperature = "熱" }
                 )
@@ -89,20 +102,30 @@ fun AddDrinkBottomSheet(onDismiss: () -> Unit) {
 
         // 價格與熱量 (並排)
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            InputSection(label = "價格", modifier = Modifier.weight(1f)) {
-                CustomTextField(value = price, onValueChange = { price = it }, placeholder = "$ 0")
+            InputSection(
+                label = stringResource(R.string.add_drink_price),
+                modifier = Modifier.weight(1f)
+            ) {
+                CustomTextField(
+                    value = price,
+                    onValueChange = { price = it },
+                    placeholder = "$ 0"
+                )
             }
-            InputSection(label = "預估熱量", modifier = Modifier.weight(1f)) {
+            InputSection(
+                label = stringResource(R.string.add_drink_kcal),
+                modifier = Modifier.weight(1f)
+            ) {
                 CustomTextField(
                     value = calories,
                     onValueChange = { calories = it },
-                    placeholder = "kcal"
+                    placeholder = stringResource(R.string.add_drink_kcal_hint)
                 )
             }
         }
 
         // 飲品類別 (兩列 Grid)
-        InputSection(label = "飲品類別") {
+        InputSection(label = stringResource(R.string.add_drink_type)) {
             FlowRow(
                 maxItemsInEachRow = 3,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -129,10 +152,14 @@ fun AddDrinkBottomSheet(onDismiss: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MainBrown),
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.main_color_dark)),
             shape = RoundedCornerShape(16.dp)
         ) {
-            Text("確認新增", fontSize = 18.sp, color = Color.White)
+            Text(
+                stringResource(R.string.add_drink_confirm),
+                fontSize = 18.sp,
+                color = Color.White
+            )
         }
     }
 }
@@ -141,7 +168,12 @@ fun AddDrinkBottomSheet(onDismiss: () -> Unit) {
 @Composable
 fun InputSection(label: String, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(label, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = TextDark)
+        Text(
+            label,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            color = colorResource(R.color.main_color_darker)
+        )
         content()
     }
 }
@@ -153,12 +185,17 @@ fun CustomTextField(value: String, onValueChange: (String) -> Unit, placeholder:
     TextField(
         value = value,
         onValueChange = onValueChange,
-        placeholder = { Text(placeholder, color = Color.Gray) },
+        placeholder = {
+            Text(
+                text = placeholder,
+                color = colorResource(R.color.text_hint_color)
+            )
+        },
         modifier = Modifier.fillMaxWidth(),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = LightBeige,
-            unfocusedContainerColor = LightBeige,
-            disabledContainerColor = LightBeige,
+            focusedContainerColor = colorResource(R.color.white_light),
+            unfocusedContainerColor = colorResource(R.color.white_light),
+            disabledContainerColor = colorResource(R.color.white_light),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
         ),
@@ -179,13 +216,13 @@ fun SelectableButton(
         onClick = onClick,
         modifier = modifier.height(48.dp),
         shape = RoundedCornerShape(12.dp),
-        color = if (isSelected) MainBrown else Color.White,
+        color = if (isSelected) colorResource(R.color.main_color_dark) else Color.White,
         border = if (isSelected) null else BorderStroke(1.dp, BorderColor)
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = text,
-                color = if (isSelected) Color.White else TextDark,
+                color = if (isSelected) Color.White else colorResource(R.color.main_color_darker),
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
             )
         }
