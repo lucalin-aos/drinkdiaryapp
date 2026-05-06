@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
@@ -29,7 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
@@ -76,6 +79,7 @@ fun AddDrinkBottomSheet(onDismiss: () -> Unit) {
         // 飲品名稱
         InputSection(label = stringResource(R.string.add_drink_name_hint)) {
             CustomTextField(
+                inputType = KeyboardType.Text,
                 value = name,
                 onValueChange = { name = it },
                 placeholder = "例如：冰美式咖啡"
@@ -107,6 +111,7 @@ fun AddDrinkBottomSheet(onDismiss: () -> Unit) {
                 modifier = Modifier.weight(1f)
             ) {
                 CustomTextField(
+                    inputType = KeyboardType.Number,
                     value = price,
                     onValueChange = { price = it },
                     placeholder = "$ 0"
@@ -117,6 +122,7 @@ fun AddDrinkBottomSheet(onDismiss: () -> Unit) {
                 modifier = Modifier.weight(1f)
             ) {
                 CustomTextField(
+                    inputType = KeyboardType.Number,
                     value = calories,
                     onValueChange = { calories = it },
                     placeholder = stringResource(R.string.add_drink_kcal_hint)
@@ -181,10 +187,20 @@ fun InputSection(label: String, modifier: Modifier = Modifier, content: @Composa
 
 // 輔助組件：自定義輸入框
 @Composable
-fun CustomTextField(value: String, onValueChange: (String) -> Unit, placeholder: String) {
+fun CustomTextField(
+    inputType: KeyboardType,
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String
+) {
     TextField(
         value = value,
         onValueChange = onValueChange,
+        textStyle = TextStyle(
+            color = colorResource(R.color.text_default_color),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Normal
+        ),
         placeholder = {
             Text(
                 text = placeholder,
@@ -200,7 +216,10 @@ fun CustomTextField(value: String, onValueChange: (String) -> Unit, placeholder:
             unfocusedIndicatorColor = Color.Transparent
         ),
         shape = RoundedCornerShape(12.dp),
-        singleLine = true
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = inputType
+        )
     )
 }
 
