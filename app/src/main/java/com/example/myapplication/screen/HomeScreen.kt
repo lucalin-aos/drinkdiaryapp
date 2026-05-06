@@ -2,6 +2,7 @@ package com.example.myapplication.screen
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,7 @@ import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import com.example.myapplication.R
 import androidx.compose.material3.Text
@@ -83,20 +85,24 @@ fun HomeScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(text = "圓餅圖範例", fontSize = 20.sp, modifier = Modifier.padding(bottom = 16.dp))
 
-            PieChart(
-                modifier = Modifier
-                    .width(300.dp)
-                    .height(300.dp),
-                pieChartData = pieChartData,
-                pieChartConfig = pieChartConfig
-            )
+            MaterialTheme(
+                colorScheme = MaterialTheme.colorScheme.copy(
+                    surface = Color.Transparent // 暫時把這一區塊的 surface 設為透明
+                )
+            ) {
+                PieChart(
+                    modifier = Modifier
+                        .width(300.dp)
+                        .height(300.dp),
+                    pieChartData = pieChartData,
+                    pieChartConfig = pieChartConfig
+                )
+            }
         }
-
-        Text(text = "這是 首頁 頁面", fontSize = 24.sp, modifier = Modifier.padding(top = 16.dp))
 
         FloatingActionButton(
             onClick = {
