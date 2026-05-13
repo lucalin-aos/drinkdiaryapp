@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import com.example.myapplication.BuildConfig
 
 @Composable
 fun MoreScreen() {
@@ -63,34 +64,33 @@ fun MoreScreen() {
 
         // 設定選單列表
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            // 常用問答
             SettingItem(
                 icon = Icons.Default.QuestionAnswer,
                 title = stringResource(R.string.more_column_faq),
                 onClick = { /* 點擊動作 */ }
             )
+            // 通知提醒
             SettingItem(
                 icon = Icons.Default.NotificationsNone,
                 title = stringResource(R.string.more_column_notify),
                 onClick = { /* 點擊動作 */ }
             )
+            // 聯絡我們
             SettingItem(
                 icon = Icons.Default.MailOutline,
                 title = stringResource(R.string.more_column_contact),
                 onClick = { /* 點擊動作 */ }
             )
-            // 最後一個是版本號碼，樣式稍有不同（右側是文字）
+            // 版本號碼
             SettingItem(
                 icon = Icons.Default.Info,
                 title = stringResource(R.string.more_column_version_num),
-                trailingText = "v1.0.0",
+                trailingText = BuildConfig.VERSION_NAME,
                 showArrow = false
             )
         }
-
-
     }
-
-
 }
 
 @Composable
