@@ -36,6 +36,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import com.example.myapplication.model.DrinkRecord
 
 val BorderColor = Color(0xFFE0D5C1) // 邊框顏色
 
@@ -44,7 +45,9 @@ val BorderColor = Color(0xFFE0D5C1) // 邊框顏色
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun AddDrinkBottomSheet(onDismiss: () -> Unit) {
+fun AddDrinkBottomSheet(onDismiss: () -> Unit,
+                        onConfirm: (DrinkRecord) -> Unit
+) {
     // 狀態管理
     var name by remember { mutableStateOf("") }
     var temperature by remember { mutableStateOf("冰") } // 預設選中冰
@@ -154,7 +157,20 @@ fun AddDrinkBottomSheet(onDismiss: () -> Unit) {
 
         // 確認按鈕
         Button(
-            onClick = onDismiss,
+            onClick = {
+                if (name.isNotBlank()) {
+                    onConfirm(
+                        DrinkRecord(
+                            name = name,
+                            price = price,
+                            calories = calories,
+                            category = category,
+                            temperature = temperature
+                        )
+                    )
+                    onDismiss()
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),

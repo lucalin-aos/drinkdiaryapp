@@ -2,13 +2,14 @@ package com.example.myapplication.screen
 
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -32,14 +33,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.common.model.PlotType
 import co.yml.charts.ui.piechart.charts.PieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
+import com.example.myapplication.model.DrinkRecord
 import com.example.myapplication.widget.AddDrinkBottomSheet
 import com.example.myapplication.widget.BorderColor
+import com.example.myapplication.widget.DrinkItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +51,9 @@ fun HomeScreen() {
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showSheet by remember { mutableStateOf(false) }
+
+    // 維護飲品清單狀態
+    var drinkList by remember { mutableStateOf(listOf<DrinkRecord>()) }
 
     // 準備圖表數據mock
     val pieChartData = PieChartData(
@@ -82,26 +89,55 @@ fun HomeScreen() {
             alpha = 0.3f
         )
 
-        // 放置圓形圖
-        Column(
+        // 使用 LazyColumn 讓整個頁面可以捲動
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                .padding(horizontal = 24.dp),
+            contentPadding = PaddingValues(bottom = 100.dp), // 預留空間給 FAB
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "圓餅圖範例", fontSize = 20.sp, modifier = Modifier.padding(bottom = 16.dp))
-
-            MaterialTheme(
-                colorScheme = MaterialTheme.colorScheme.copy(
-                    surface = Color.Transparent // 暫時把這一區塊的 surface 設為透明
+            item {
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = "本月統計",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.main_color_darker)
                 )
-            ) {
-                PieChart(
-                    modifier = Modifier
-                        .width(300.dp)
-                        .height(300.dp),
-                    pieChartData = pieChartData,
-                    pieChartConfig = pieChartConfig
+            }
+
+            // 放置圓形圖
+            item {
+                MaterialTheme(
+                    colorScheme = MaterialTheme.colorScheme.copy(
+                        surface = Color.Transparent // 暫時把這一區塊的 surface 設為透明
+                    )
+                ) {
+                    PieChart(
+                        modifier = Modifier
+                            .width(300.dp)
+                            .height(300.dp),
+                        pieChartData = pieChartData,
+                        pieChartConfig = pieChartConfig
+                    )
+                }
+            }
+
+            item {
+                Text(
+                    text = "今日飲品",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.main_color_darker),
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
+            // 顯示動態新增的飲品清單
+            items(drinkList.size) { pos ->
+                DrinkItem(
+                    drink = drinkList[pos]
                 )
             }
         }
@@ -130,7 +166,13 @@ fun HomeScreen() {
                     containerColor = Color.White,
                     dragHandle = { BottomSheetDefaults.DragHandle(color = BorderColor) })
                 {
-                    AddDrinkBottomSheet(onDismiss = { showSheet = false })
+                    // 傳入確認動作：更新 list 並關閉 sheet
+                    AddDrinkBottomSheet(
+                        onDismiss = { showSheet = false },
+                        onConfirm = { newDrink ->
+                            drinkList = drinkList + newDrink // 新增到清單中
+                        }
+                    )
                 }
             }
         }
